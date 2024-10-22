@@ -1,0 +1,26 @@
+Assignment 3 Documentation
+
+Modifications:
+- The InventoryManager class was split into the InventoryManager and FileManager classes
+- The 2 classes' methods were extracted into 2 abstract interfaces, InventoryOperations and FileOperations.
+- These 2 interfaces were implemented and their methods overrided as needed by their respective classes.
+- No methods required any significant changes from the original code; only the class splitting and interface extraction was needed.
+
+SRP:
+- InventoryManager was split into 2 classes/interfaces to separate inventory and file responsibilities.
+
+OCP:
+- Inventory and File functionality was extracted into 2 interfaces, allowing for future extension without requiring modification to the existing code.
+
+LSP:
+- The new classes can be used in place of their respective interfaces without issue.
+
+ISP:
+- The 2 interfaces created are used in their entirety by their respective classes.
+
+DIP:
+- Both classes depend on abstract interfaces and dependency injection can be used.
+
+Notes: 
+- The saveInventoryToFile method was not given any proper functionality as the original code did not have this either, so it simply prints a line for now.
+- A Main class was not implemented as the original code did not have one either.
