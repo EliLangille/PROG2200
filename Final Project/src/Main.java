@@ -1,3 +1,5 @@
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Scanner;
 
@@ -18,8 +20,11 @@ public class Main {
         checkerThread.start();
 
         while (running) {
-            System.out.println("Dog Activity App\n1. Add Event\n2. View by Week\n3. View by Type\n4. Exit");
+            System.out.println("\nDog Activity App\n1. Add Event\n2. View by Week\n3. View by Type\n4. Exit");
             int choice = s.nextInt();
+
+            // do not disturb during actions (avoid creating a mess in console)
+            reminderPrinter.setDoNotDisturb(true);
 
             switch(choice) {
                 case 1:
@@ -57,11 +62,11 @@ public class Main {
                     System.out.println("Invalid choice!");
             }
 
-            // Spacing
-            System.out.println();
+            // Turn off do not disturb after action
+            reminderPrinter.setDoNotDisturb(false);
 
             // Print queued reminders while on the main menu (avoid action interrupt)
-            reminderPrinter.printReminders();
+            reminderPrinter.printQueuedReminders();
         }
 
         try {

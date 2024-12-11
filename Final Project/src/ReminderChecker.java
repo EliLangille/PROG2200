@@ -23,36 +23,35 @@ public class ReminderChecker implements Runnable {
     }
 
     public void fireScheduledReminder(Event event) {
-        String message = "\nReminder: Your event " + event.getName() + "(" + event.getType() + ")" + " starts at " + event.getStartTime() + " on " + event.getDate();
-        support.firePropertyChange("reminder", null, message);
-    }
+        String message = "Reminder: Your event '" + event.getName() + " - " + event.getType() + "' starts";
 
-    public void fireStartReminder(Event event) {
-        String message = "\nReminder: Your event " + event.getName() + "(" + event.getType() + ") has started";
-        support.firePropertyChange("reminder", null, message);
-    }
+        // Modify message based on event start time if present
+        if (event.getStartTime() != null) {
+            message += " at " + event.getStartTime() + " today";
+        } else {
+            message += " is today";
+        }
 
-    public void fireEndReminder(Event event) {
-        String message = "\nReminder: Your event " + event.getName() + "(" + event.getType() + ") has ended";
-        support.firePropertyChange("reminder", null, message);
+        // Fire reminder for event if not already fired
+        if (!event.getRemindedStatus()) {
+            support.firePropertyChange("reminder", null, message);
+            event.setRemindedStatus(true);
+        }
+
     }
 
     public void checkReminder(Event event) {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDate today = now.toLocalDate();
+        LocalTime now = LocalTime.now();
+        LocalDate today = LocalDate.now();
 
         // If event is not today, skip (reminders only for day of)
-        if (!event.getDate().toLocalDate().isEqual(today)) {
+        if (!event.getDate().isEqual(today)) {
             return;
         }
 
-        // Check and fire scheduled reminder (all cant occur at once)
-        if (event.getReminderTime() != null && (event.getReminderTime().isBefore(now) || event.getReminderTime().isEqual(now))) {
-                fireScheduledReminder(event);
-        } else if (event.getStartTime().isBefore(now) || event.getStartTime().isEqual(now)) {
-            fireStartReminder(event);
-        } else if (event.getEndTime().isBefore(now) || event.getEndTime().isEqual(now)) {
-            fireEndReminder(event);
+        // Fire scheduled reminder if now or overdue
+        if (event.getReminderTime() != null && (event.getReminderTime().isBefore(now) || event.getReminderTime().equals(now))) {
+            fireScheduledReminder(event);
         }
     }
 
@@ -63,9 +62,9 @@ public class ReminderChecker implements Runnable {
                 checkReminder(event);
             }
 
-            // Run checks every minute
+            // Run checks every 10 seconds
             try {
-                Thread.sleep(60000);
+                Thread.sleep(10000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 running = false;

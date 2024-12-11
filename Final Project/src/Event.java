@@ -12,14 +12,15 @@ public class Event {
     private final LocalTime reminderTime;
     private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+    private boolean isReminded = false;
 
     public Event(EventType type, String name, String description, String date, String startTime, String endTime, String reminderTime) {
         this.type = type;
         this.name = name;
         this.description = description;
         this.date = LocalDate.parse(date, dateFormatter);
-        this.startTime = (startTime != null && !startTime.isEmpty()) ? LocalTime.parse(startTime, timeFormatter) : LocalTime.parse("00:00");
-        this.endTime = (endTime != null && !endTime.isEmpty()) ? LocalTime.parse(endTime, timeFormatter) : LocalTime.parse("23:59");
+        this.startTime = (startTime != null && !startTime.isEmpty()) ? LocalTime.parse(startTime, timeFormatter) : null;
+        this.endTime = (endTime != null && !endTime.isEmpty()) ? LocalTime.parse(endTime, timeFormatter) : null;
         this.reminderTime = (reminderTime != null && !reminderTime.isEmpty()) ? LocalTime.parse(reminderTime, timeFormatter) : null;
     }
 
@@ -39,20 +40,30 @@ public class Event {
         return startTime;
     }
 
-    public LocalTime getEndTime() {
-        return endTime;
-    }
-
     public LocalTime getReminderTime() {
         return reminderTime;
+    }
+
+    public boolean getRemindedStatus() {
+        return this.isReminded;
+    }
+
+    public void setRemindedStatus(boolean status) {
+        this.isReminded = status;
     }
 
     @Override
     public String toString() {
         // Format event details
         StringBuilder sb = new StringBuilder();
-        sb.append(name).append(" - ").append(type.getName()).append("\n")
-                .append(description).append("\n").append(date).append("\n");
+        sb.append(name).append(" - ").append(type.getName()).append("\n");
+
+        // If no description, don't show
+        if (!description.isEmpty()) {
+            sb.append(description).append("\n");
+        }
+
+        sb.append(date).append("\n");
 
         // If no start time, don't show start or end time
         if (startTime != null) {
