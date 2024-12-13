@@ -1,5 +1,4 @@
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
@@ -20,7 +19,7 @@ public class Main {
         checkerThread.start();
 
         while (running) {
-            System.out.println("\nDog Activity App\n1. Add Event\n2. View by Week\n3. View by Type\n4. Exit");
+            System.out.println("\nDog Activity App\n1. Add Event\n2. View by Date\n3. View by Type\n4. Exit");
             int choice = s.nextInt();
 
             // do not disturb during actions (avoid creating a mess in console)
@@ -39,8 +38,13 @@ public class Main {
                         break;
                     }
 
-                    filteredEvents = EventFilter.createFilteredList(events);
-                    EventViewer.showEventsByDay(filteredEvents);
+                    // Get start and end date for range from user
+                    List<LocalDate> filterDates = EventInputHandler.getFilterDatesFromUser();
+                    LocalDate startDate = filterDates.get(0);
+                    LocalDate endDate = filterDates.get(1);
+
+                    filteredEvents = EventFilter.filterByTimePeriod(events, startDate, endDate);
+                    EventViewer.showEventsByDate(filteredEvents, startDate, endDate);
                     break;
                 case 3:
                     events = eventManager.getEvents();
@@ -49,8 +53,11 @@ public class Main {
                         break;
                     }
 
-                    filteredEvents = EventFilter.createFilteredList(events);
-                    EventViewer.showEventsByType(filteredEvents);
+                    // Get types from user
+                    List<EventType> types = EventInputHandler.getFilterTypesFromUser();
+
+                    filteredEvents = EventFilter.filterByType(events, types);
+                    EventViewer.showEventsByType(filteredEvents, types);
                     break;
                 case 4:
                     System.out.println("Goodbye!");

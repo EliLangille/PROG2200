@@ -1,24 +1,19 @@
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class EventViewer {
 
-    public static void showEventsByDay(List<Event> events) {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
+    public static void showEventsByDate(List<Event> events, LocalDate startDate, LocalDate endDate) {
+        System.out.println("Showing events from " + startDate + " to " + endDate);
         for (Event event : events) {
-            LocalDate eventDate = LocalDate.parse(event.getDate().format(dateFormatter), dateFormatter);
-            System.out.println("DATE: " + eventDate);
-            System.out.println(event);
+            System.out.println(event + "\n");
         }
     }
 
-    public static void showEventsByType(List<Event> events) {
+    public static void showEventsByType(List<Event> events, List<EventType> types) {
+        System.out.println("Showing events of types: " + types);
         for (Event event : events) {
-            String eventType = event.getType().getName().toUpperCase();
-            System.out.println("TYPE: " + eventType);
-            System.out.println(event);
+            System.out.println(event + "\n");
         }
     }
 }
